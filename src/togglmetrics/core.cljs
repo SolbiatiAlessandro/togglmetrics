@@ -17,8 +17,12 @@
 
 (defn home [req res]
   (go 
-    (let [l (<! (toggl/detailed-report metrics/report-length))
-          args (clj->js {:title l})]
+    (let [clj-args (<! (toggl/detailed-report 
+                         {:length metrics/report-length
+                          :unique_projects metrics/unique-projects
+                          :duration_bar_chart metrics/bar-chart}))
+          args (clj->js clj-args)]
+    (js/console.log args)
     (.render res "index" args))))
 
 (defn express-app []
