@@ -27,7 +27,7 @@
    ;; ../../ is because this file gets compiled in /dev/togglmetrics
    ;; but views is at /views. Check project.clj ouput-to for more info.
    (.set app "views" (.join path js/__dirname "../../views"))
-   (.set app "view engine" "jade")
+   (.set app "view engine" "pug")
    app
    ))
 

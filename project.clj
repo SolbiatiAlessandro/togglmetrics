@@ -3,7 +3,7 @@
                                            :path "0.12.7"
                                            :ws "3.2.0"
                                            :toggl-api "1.0.1"
-                                           :jade "~1.11.0"
+                                           :pug "^3.0.0"
                                            }
                                 :install-deps true
                                 :infer-externs true
