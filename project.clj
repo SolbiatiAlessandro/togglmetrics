@@ -1,6 +1,10 @@
 (def shared-compiler-settings '{:main togglmetrics.core
                                 :npm-deps {:express "4.16.2"
-                                           :ws "3.2.0"}
+                                           :path "0.12.7"
+                                           :ws "3.2.0"
+                                           :toggl-api "1.0.1"
+                                           :jade "~1.11.0"
+                                           }
                                 :install-deps true
                                 :infer-externs true
                                 :target :nodejs})
@@ -10,6 +14,7 @@
   :license {:name "Mozilla Public License 2.0"
             :url "https://www.mozilla.org/en-US/MPL/2.0/"}
   :dependencies [[org.clojure/clojure "1.9.0"]
+                 [org.clojure/core.async "0.3.443"]
                  [org.clojure/clojurescript "1.9.946" :scope "provided"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]]
