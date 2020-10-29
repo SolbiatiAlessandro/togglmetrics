@@ -38,7 +38,10 @@
   {"productivity" 1 
    "facebook" 0 
    "videogames" 2 
-   "steamengine" 1})
+   "steamengine" 1
+   "coding" 1
+   "morning-chill" 2
+   })
 
 (defn ms-to-h [ms] (/ (.round js.Math (* (/ ms (* 1000 60 60)) 100)) 100))
 
@@ -61,8 +64,10 @@
        first-label (apply min unique-labels)
        last-label (apply max unique-labels)
        interval (c/days 1)
-       labels-date (p/periodic-seq first-label last-label interval)]
-    (map cc/to-string labels-date)))
+       labels-date-exclusive (p/periodic-seq first-label last-label interval)
+       labels-date (into (vector last-label) labels-date-exclusive)    
+       ]
+    (sort  (map cc/to-string labels-date))))
 
 (defn bar-chart [report]
   (let [entries (report-data report) 

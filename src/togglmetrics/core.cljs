@@ -20,7 +20,9 @@
     (let [clj-args (<! (toggl/detailed-report 
                          {:length metrics/report-length
                           :unique_projects metrics/unique-projects
-                          :duration_bar_chart metrics/bar-chart}))
+                          :duration_bar_chart metrics/bar-chart
+                          ;; :debug metrics/report-data
+                          }))
           args (clj->js clj-args)]
     (js/console.log args)
     (.render res "index" args))))
