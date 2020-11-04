@@ -15,17 +15,42 @@
 
 (defonce server (atom nil))
 
-(defn home [req res]
+(def report-fields
+  "which are the report fields to be computed for rendering"
+  {:length metrics/report-length
+  :unique_projects metrics/unique-projects
+  :duration_bar_chart metrics/bar-chart
+  :unique_dates metrics/unique-dates
+  ;; :debug metrics/report-data
+  })
+
+(def report-fields-join
+  "function to be called for joining two fields from different pages"
+  {:length +
+  :unique_projects first
+  :duration_bar_chart first
+  :unique_dates first
+  ;; :debug metrics/report-data
+  })
+
+(defn join-args [prev-args args]
+  (if prev-args
+    (map (fn [k] ((get report-fields-join k) (get args k) (get prev-args k))) (keys args))
+    args
+   ))
+
+(defn render-entrypoint 
+  "recursive async function that calls detailed-report with different pages"
+  [req res page prev-args]
   (go 
-    (let [clj-args (<! (toggl/detailed-report 
-                         {:length metrics/report-length
-                          :unique_projects metrics/unique-projects
-                          :duration_bar_chart metrics/bar-chart
-                          ;; :debug metrics/report-data
-                          }))
-          args (clj->js clj-args)]
-    (js/console.log args)
-    (.render res "index" args))))
+    (let [args (<! (toggl/detailed-report report-fields page))
+          args (join-args prev-args args)]
+      (js/console.log page)
+      (if (> (:length, args) 0)
+        (render-entrypoint req res (+ page 1) args)
+        (.render res "index" (clj->js args))))))
+
+(defn render-entrypoint-wrapper [req res] (render-entrypoint req res 1 nil))
 
 (defn express-app []
  (let [app (express)]
@@ -40,7 +65,7 @@
 (defn start-server []
   (println "Starting server")
   (let [app (express-app)]
-    (.get app "/" home)
+    (.get app "/" render-entrypoint-wrapper)
     (.listen app 3000 (fn [] (println "Example app listening on port 3000!")))))
 
 (defn start! []

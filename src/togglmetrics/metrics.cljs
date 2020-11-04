@@ -29,8 +29,10 @@
   (cc/to-local-date (parse-datetime string)) )
 
 (defn local-date-string [string]
-  (cc/to-string (local-date string))  
-  )
+  (cc/to-string (local-date string)))
+
+(defn unique-dates [report]
+  (set (map (fn [entry] (local-date-string (get entry "start"))) (report-data report))) )
 
 (def categories ["paid-work" "unpaid-work" "relax"])
 (def categories-color ["red", "blue", "green"])
@@ -41,6 +43,7 @@
    "steamengine" 1
    "coding" 1
    "morning-chill" 2
+   "kaggle" 1
    })
 
 (defn ms-to-h [ms] (/ (.round js.Math (* (/ ms (* 1000 60 60)) 100)) 100))

@@ -7,7 +7,13 @@
   )
 
 (def toggl-client (toggl-api. #js {:apiToken "778134d90be17f0d492dd62529d7c1f5"}))
-(def default-params #js {:user_agent "alessandro.solbiati@gmail.com" :workspace_id "4782539" :since "2020-01-01"}) 
+(def default-params {:user_agent "alessandro.solbiati@gmail.com" :workspace_id "4782539" :since "2020-01-01"}) 
+
+(defn params [default-params page]
+  (let [p (merge default-params {:page page})
+        js-p (clj->js p)]
+    ;;(js/console.log js-p)
+    js-p))
 
 (defn report-functions [report key-functions]
   "calls functions from key-functions Map on report, nil if report-data empty"
@@ -15,14 +21,14 @@
   (map call-report-function (keys key-functions))))
 
 (defn report-extract-data [report key-functions]
-  (zipmap (keys key-functions) (report-functions report key-functions)))
+    (zipmap (keys key-functions) (report-functions report key-functions)))
 
-(defn detailed-report [key-functions]
+(defn detailed-report [key-functions page]
   (let [out (chan)]
     (go
-      (.detailedReport toggl-client default-params 
+        (.detailedReport toggl-client (params default-params page)
                     (fn [err report]
                       (go (if err 
                         (>! out err) 
-                        (>! out (report-extract-data (js->clj report) key-functions))))))
+                        (>! out (report-extract-data (js->clj report) key-functions)))))) 
       (<! out))))
