@@ -24,31 +24,15 @@
   ;; :debug metrics/report-data
   })
 
-(def report-fields-join
-  "function to be called for joining two fields from different pages"
-  {:length +
-  :unique_projects first
-  :duration_bar_chart first
-  :unique_dates first
-  ;; :debug metrics/report-data
-  })
-
-(defn join-args [prev-args args]
-  (if prev-args
-    (map (fn [k] ((get report-fields-join k) (get args k) (get prev-args k))) (keys args))
-    args
-   ))
-
 (defn render-entrypoint 
   "recursive async function that calls detailed-report with different pages"
-  [req res page prev-args]
+  [req res page prev-entries]
   (go 
-    (let [args (<! (toggl/detailed-report report-fields page))
-          args (join-args prev-args args)]
-      (js/console.log page)
-      (if (> (:length, args) 0)
-        (render-entrypoint req res (+ page 1) args)
-        (.render res "index" (clj->js args))))))
+    (let [new-entries (<! (toggl/detailed-report page))
+          entries (into prev-entries new-entries)]
+      (if (> (count new-entries) 0)
+        (render-entrypoint req res (+ page 1) entries)
+        (.render res "index" (clj->js (toggl/report-extract-data entries report-fields)))))))
 
 (defn render-entrypoint-wrapper [req res] (render-entrypoint req res 1 nil))
 

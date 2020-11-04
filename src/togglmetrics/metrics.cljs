@@ -8,13 +8,13 @@
 
 (defn report-data [report] (get report "data"))
 
-(defn report-length [report] (count (report-data report)))
+(defn report-length [entries] (count entries))
 
-(defn unique-field [report field]
-  (set (map (fn [entry] (get entry field)) (report-data report))))
+(defn unique-field [entries field]
+  (set (map (fn [entry] (get entry field)) entries)))
 
-(defn unique-projects [report]
-  (unique-field report "project"))
+(defn unique-projects [entries]
+  (unique-field entries "project"))
 
 (defn parse-datetime [string]
   ;; string = "20140401T145700-08:30"
@@ -31,8 +31,8 @@
 (defn local-date-string [string]
   (cc/to-string (local-date string)))
 
-(defn unique-dates [report]
-  (set (map (fn [entry] (local-date-string (get entry "start"))) (report-data report))) )
+(defn unique-dates [entries]
+  (set (map (fn [entry] (local-date-string (get entry "start"))) entries)) )
 
 (def categories ["paid-work" "unpaid-work" "relax"])
 (def categories-color ["red", "blue", "green"])
@@ -72,11 +72,8 @@
        ]
     (sort  (map cc/to-string labels-date))))
 
-(defn bar-chart [report]
-  (let [entries (report-data report) 
-        labels (bar-chart-labels entries)
-        datasets (clj->js  (vec (map (fn [category] (bar-chart-category category labels entries)) (range (count categories )))))     
-        ]
+(defn bar-chart [entries]
+  (let [labels (bar-chart-labels entries)
+        datasets (vec (map (fn [category] (bar-chart-category category labels entries)) (range (count categories ))))]
   {:labels labels
-   :datasets (clj->js datasets)}))
-
+   :datasets datasets}))

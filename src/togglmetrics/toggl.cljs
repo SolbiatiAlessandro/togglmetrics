@@ -12,23 +12,27 @@
 (defn params [default-params page]
   (let [p (merge default-params {:page page})
         js-p (clj->js p)]
-    ;;(js/console.log js-p)
+    (js/console.log js-p)
     js-p))
 
-(defn report-functions [report key-functions]
+(defn report-functions [entries key-functions]
   "calls functions from key-functions Map on report, nil if report-data empty"
-  (let [call-report-function (fn [k] (if (seq (metrics/report-data report)) ((get key-functions k) report) nil))]
+  (let [call-report-function (fn [k] (if (seq entries) ((get key-functions k) entries) nil))]
   (map call-report-function (keys key-functions))))
 
-(defn report-extract-data [report key-functions]
-    (zipmap (keys key-functions) (report-functions report key-functions)))
+(defn report-extract-data [entries key-functions]
+    (zipmap (keys key-functions) (report-functions entries key-functions)))
 
-(defn detailed-report [key-functions page]
+(defn detailed-report [page]
   (let [out (chan)]
+    (js/console.log (str "detailed-report querying page " page))
     (go
         (.detailedReport toggl-client (params default-params page)
                     (fn [err report]
-                      (go (if err 
+                      (go 
+                        (js/console.log err)
+                        (js/console.log report)
+                        (if err 
                         (>! out err) 
-                        (>! out (report-extract-data (js->clj report) key-functions)))))) 
+                        (>! out (metrics/report-data (js->clj report)))))))
       (<! out))))
