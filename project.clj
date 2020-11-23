@@ -13,7 +13,9 @@
   :description ""
   :license {:name "Mozilla Public License 2.0"
             :url "https://www.mozilla.org/en-US/MPL/2.0/"}
-  :dependencies [[org.clojure/clojure "1.9.0"]
+  :dependencies [
+                 [javax.xml.bind/jaxb-api "2.4.0-b180830.0359"]
+                 [org.clojure/clojure "1.9.0"]
                  [org.clojure/core.async "0.3.443"]
                  [org.clojure/clojurescript "1.9.946" :scope "provided"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]]
@@ -55,4 +57,6 @@
 
               :plugins [[lein-figwheel "0.5.16-SNAPSHOT"]]
 
-              :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}})
+              :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
+
+  )

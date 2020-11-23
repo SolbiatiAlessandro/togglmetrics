@@ -21,3 +21,15 @@ To run the app
 and in a different terminal
 
 `node dev/togglmetrics.js`
+
+## production setup on ubuntu
+
+```
+# get java 8 (lein figwheel doesn't work with java > 8), see https://github.com/bhauman/lein-figwheel/issues/612
+apt install openjdk-8-jre-headless
+# follow linux installation of clojure
+# https://clojure.org/guides/getting_started#_installation_on_linux
+# follow linux installation of lein
+# https://stackoverflow.com/a/36940738/7067655
+# now follow instruction above "to run the app"
+```
