@@ -8,6 +8,11 @@
 
 (defn report-data [report] (get report "data"))
 
+(defn report-debug [entries] 
+  (map (fn [entry] 
+         (str "\n" (get entry "project") " " (get entry "start") " " (get entry "end")))
+       entries))
+
 (defn report-length [entries] (count entries))
 
 (defn unique-field [entries field]

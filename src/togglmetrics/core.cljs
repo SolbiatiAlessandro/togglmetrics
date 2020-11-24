@@ -16,12 +16,13 @@
 (defonce server (atom nil))
 
 (def report-fields
-  "which are the report fields to be computed for rendering"
+  "which are the report fields to be computed for rendering, this function will
+  be called with `entries` as argument from report data"
   {:length metrics/report-length
   :unique_projects metrics/unique-projects
   :duration_bar_chart metrics/bar-chart
   :unique_dates metrics/unique-dates
-  ;; :debug metrics/report-data
+  :debug metrics/report-debug
   })
 
 (defn render-entrypoint 
