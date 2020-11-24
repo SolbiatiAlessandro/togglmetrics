@@ -1,11 +1,31 @@
 extends layout
 
 block content
-	h1 Detailed Report
-	button(onclick='openDebug()') show debug informations
-	p number of rows in the report is #{length} 
-	p unique projects are #{unique_projects}
+	.card-deck.p-4
+		.card
+			.card-body
+				h5.card-title togglmetrics
+				h6.card-subtitle.mb-2.text-muted toggl sent #{length} Time Entries
+				a.card-link.text-info(onclick='openDebug()') Debug
+		.card
+			.card-body
+				.input-group.mb-3
+					input.form-control(type="text" placeholder="your Toggl API token")
+				.input-group.mb-3
+					input.form-control(type="text" placeholder="your workspace ID")
+				a.card-link.font-weight-bold Reload With New Settings
+		.card
+			.card-body.flex
+				each project in unique_projects
+					.dropdown
+						button.btn.btn-secondary.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' id='#{project}')
+							| #{project}
+					.dropdown-menu(aria-labelledby='#{project}')
+						each category in unique_projects
+							a.dropdown-item(href='#') #{category}
+
 	canvas(style="width:60%;height:600px", id="canvas")
+
 	div(id="debug" style="display:none;" )
 		button(onclick='closeDebug()') hide debug informations
 		p #{debug}

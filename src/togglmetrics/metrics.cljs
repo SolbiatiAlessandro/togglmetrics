@@ -6,6 +6,7 @@
             [clojure.string :as s]
             ))
 
+
 (defn report-data [report] (get report "data"))
 
 (defn report-debug [entries] 
