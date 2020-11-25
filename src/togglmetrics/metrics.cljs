@@ -78,3 +78,9 @@
         datasets (vec (map (fn [category] (bar-chart-category category labels entries project-category)) (range (count categories ))))]
   {:labels labels
    :datasets datasets}))
+
+(defn bar-chart-not-empty [entries project-category]
+  (let [data (bar-chart entries project-category)]
+    (> (count (filter (fn [dataset] 
+      (> (count (filter (fn [x] (> (x 0.0))) (get dataset :data))) 0)
+                                     ) (get data :datasets))) 0)))

@@ -27,6 +27,9 @@ block content
 
 		.col-6
 			.card.h-100
+				.card-header
+					h5.card-title Your Projects
+					h6.card-subtitle.mb-2.text-muted What categories do your projects belong to?
 				.card-body.btn-group.flex-wrap
 					each project in unique_projects
 						.dropdown.p-2
@@ -39,6 +42,9 @@ block content
 					button.btn.btn-primary.card-link(onclick="updateProjects();") Update Projects
 
 	.card.m-4
+		.card-body#no-chart-nudge(style="display:none;")
+			h5.card-title No Data Yet..
+			p.card-text Put your projects into categories to see the breakdown of your data here!
 		canvas(style="width:60%;height:600px", id="canvas")
 	div(id="debug" style="display:none;" )
 		button(onclick='closeDebug()') hide debug informations
@@ -46,10 +52,21 @@ block content
 		p unique dates are #{unique_dates}
 
 	script.
+		// page logic
+		const displayElem = (val) => {return (id) => {document.getElementById(id).style.display = val;}};
+		const showElem = (id) => {return () => {displayElem('block')(id)}};
+		const hideElem = (id) => {return () => {displayElem('none')(id)}};
+
+		const openDebug = showElem('debug');
+		const closeDebug = hideElem('debug');
+		const open_updateProjectsFooter = showElem('updateProjectsFooter');
+
+	script.
 		// togglmetrics logic
 		var tokenData = !{JSON.stringify(token_data)};
 		var uniqueProjects = !{JSON.stringify(unique_projects)};
 		var categoriesColor = !{JSON.stringify(categories_color)};
+		var chartEmpty = !{JSON.stringify(duration_bar_chart_empty)};
 
 		const setProjectCategory = function(project, category){
 			// category is 0, 1, 2
@@ -80,18 +97,11 @@ block content
 
 			document.getElementById('toggl-api-key').value = tokenData['toggl-api-key'];
 			document.getElementById('workspace-id').value = tokenData['workspace-id'];
+
+			if (chartEmpty) { hideElem('canvas')(); showElem('no-chart-nudge')();  }
 		});
 
 
-	script.
-		// page logic
-		const displayElem = (val) => {return (id) => {document.getElementById(id).style.display = val;}};
-		const showElem = (id) => {return () => {displayElem('block')(id)}};
-		const hideElem = (id) => {return () => {displayElem('none')(id)}};
-
-		const openDebug = showElem('debug');
-		const closeDebug = hideElem('debug');
-		const open_updateProjectsFooter = showElem('updateProjectsFooter');
 
 
 	script.

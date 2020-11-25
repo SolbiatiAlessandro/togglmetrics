@@ -23,6 +23,7 @@
   {:length metrics/report-length
   :unique_projects metrics/unique-projects
   :duration_bar_chart metrics/bar-chart
+  :duration_bar_chart_empty (fn [e t] (not (metrics/bar-chart-not-empty e t)))
   :unique_dates metrics/unique-dates
   :debug metrics/report-debug
   :token_data (fn [_ token-data] token-data)
