@@ -25,9 +25,13 @@
   :duration_bar_chart metrics/bar-chart
   :unique_dates metrics/unique-dates
   :debug metrics/report-debug
-  :categories (fn [_] metrics/categories)
-  :project_category (fn [_] metrics/project-category)
-  :categories_color (fn [_] metrics/categories-color)
+  :categories (fn [_ _] metrics/categories)
+  :project_category (fn [_ token-data] (do
+                                         (js/console.log "314159")
+                                         (js/console.log token-data)
+                                         token-data
+                                         ))
+  :categories_color (fn [_ _] metrics/categories-color)
   })
 
 (defn render-entrypoint 
@@ -38,13 +42,15 @@
           entries (into prev-entries new-entries)]
       (if (> (count new-entries) 0)
         (render-entrypoint token req res (+ page 1) entries)
-        (.render res "index" (clj->js (toggl/report-extract-data entries report-fields)))))))
+        (.render res "index" (clj->js (toggl/report-extract-data entries (db/load-token token) report-fields)))))))
 
-(defn render-entrypoint-wrapper-get [req res] (render-entrypoint "778134d90be17f0d492dd62529d7c1f5" req res 1 nil))
+(defn render-entrypoint-wrapper-get [req res] 
+  (render-entrypoint "778134d90be17f0d492dd62529d7c1f5" req res 1 nil))
 (defn render-entrypoint-wrapper-post [req res] 
   "entrypoint post means user is sending new config data that need to be updated
   
   req.body -> {'toggl-api-key': '123',
+ 
   'workspace-id': '124',
   project_1 'undefined',
   project_2 category_2,
