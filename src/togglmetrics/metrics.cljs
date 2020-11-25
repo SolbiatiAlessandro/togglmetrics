@@ -20,7 +20,7 @@
   (set (map (fn [entry] (get entry field)) entries)))
 
 (defn unique-projects [entries]
-  (unique-field entries "project"))
+  (remove nil? (unique-field entries "project")))
 
 (defn parse-datetime [string]
   ;; string = "20140401T145700-08:30"

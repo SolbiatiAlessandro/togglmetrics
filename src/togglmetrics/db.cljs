@@ -1,4 +1,4 @@
-(ns togglemetrics.db "module to save and load configuration from users as JSON files"
+(ns togglmetrics.db "module to save and load configuration from users as JSON files"
   (:require [fs])
   )
 
@@ -7,6 +7,6 @@
 (defn load-db []
   (js->clj (.parse js/JSON (.readFileSync fs DB_PATH))))
 
-(defn write-new-token [token payload]
+(defn save-token-data [token payload]
   (let [updated-db (assoc (load-db) token payload)]
     (.writeFileSync fs DB_PATH (.stringify js/JSON (clj->js updated-db)))))

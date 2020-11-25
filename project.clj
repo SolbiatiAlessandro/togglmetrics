@@ -4,6 +4,7 @@
                                            :ws "3.2.0"
                                            :toggl-api "1.0.1"
                                            :pug "^3.0.0"
+                                           :body-parser "1.19.0"
                                            }
                                 :install-deps true
                                 :infer-externs true
