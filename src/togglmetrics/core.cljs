@@ -25,12 +25,8 @@
   :duration_bar_chart metrics/bar-chart
   :unique_dates metrics/unique-dates
   :debug metrics/report-debug
+  :token_data (fn [_ token-data] token-data)
   :categories (fn [_ _] metrics/categories)
-  :project_category (fn [_ token-data] (do
-                                         (js/console.log "314159")
-                                         (js/console.log token-data)
-                                         token-data
-                                         ))
   :categories_color (fn [_ _] metrics/categories-color)
   })
 
@@ -38,26 +34,35 @@
   "recursive async function that calls detailed-report with different pages"
   [token req res page prev-entries]
   (go 
-    (let [new-entries (<! (toggl/detailed-report token page))
-          entries (into prev-entries new-entries)]
-      (if (> (count new-entries) 0)
-        (render-entrypoint token req res (+ page 1) entries)
-        (.render res "index" (clj->js (toggl/report-extract-data entries (db/load-token token) report-fields)))))))
+    (let [queried-entries (<! (toggl/detailed-report token page))] 
+      (if (seqable? queried-entries)
+        ;; query was successful
+        (let [new-entries queried-entries
+            entries (into prev-entries new-entries)]
+            (if (> (count new-entries) 0)
+              (render-entrypoint token req res (+ page 1) entries)
+              (.render res "index" (clj->js (toggl/report-extract-data entries (db/load-token token) report-fields)))))
+        ;; query failed
+        (.render res "error" (clj->js {:error queried-entries}))))))
 
 (defn render-entrypoint-wrapper-get [req res] 
-  (render-entrypoint "778134d90be17f0d492dd62529d7c1f5" req res 1 nil))
+  "/?token=XXX for index.pug, / for landing.pug"
+  (if-let [token (get (js->clj (.-query req)) "token")]
+    (render-entrypoint token req res 1 nil) 
+    (.render res "landing")))
+
 (defn render-entrypoint-wrapper-post [req res] 
   "entrypoint post means user is sending new config data that need to be updated
   
   req.body -> {'toggl-api-key': '123',
- 
   'workspace-id': '124',
   project_1 'undefined',
   project_2 category_2,
   ...}"
   (let [data (js->clj (.-body req))
         token (get data "toggl-api-key")] 
-    (db/save-token-data token data)))
+    (db/save-token-data token data)
+    (.redirect res (str "/?token=" token))))
 
 (defn express-app []
  (let [app (express)]

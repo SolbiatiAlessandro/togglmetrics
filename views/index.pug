@@ -13,12 +13,17 @@ block content
 				.card-body
 					form(id='updateForm' method='post', action='/', enctype='application/json')
 						.form-group
-							input#toggl-api-key.form-control(type='text' name='toggl-api-key' placeholder='Your toggl account API key' required='')
-							small.form-text.text-muted Look for API Token at https://track.toggl.com/profile
+							input#toggl-api-key.form-control(type='text' name='toggl-api-key' placeholder='your toggl account api key' required='')
+							small.form-text.text-muted 
+								| look for api token at 
+								a(href="https://track.toggl.com/profile" target="_blank") https://track.toggl.com/profile
 						.form-group
-							input#workspace-id.form-control(type='text' placeholder='Your workspace id' name='workspace-id' required='')
-							small.form-text.text-muted Go at https://track.toggl.com/settings and copy the number from the url 
-						button.btn.btn-primary(type='submit') Update Token
+							input#workspace-id.form-control(type='text' placeholder='your workspace id' name='workspace-id' required='')
+							small.form-text.text-muted 
+								| go at 
+								a(href="https://track.toggl.com/settings" target="_blank") https://track.toggl.com/settings 
+								| and copy the number from the url 
+						button.btn.btn-primary(type='submit') update token
 
 		.col-6
 			.card.h-100
@@ -35,7 +40,6 @@ block content
 
 	.card.m-4
 		canvas(style="width:60%;height:600px", id="canvas")
-
 	div(id="debug" style="display:none;" )
 		button(onclick='closeDebug()') hide debug informations
 		p #{debug}
@@ -43,11 +47,11 @@ block content
 
 	script.
 		// togglmetrics logic
-		var projectCategoryMap = !{JSON.stringify(project_category)};
+		var tokenData = !{JSON.stringify(token_data)};
 		var uniqueProjects = !{JSON.stringify(unique_projects)};
 		var categoriesColor = !{JSON.stringify(categories_color)};
 
-		var setProjectCategory = function(project, category){
+		const setProjectCategory = function(project, category){
 			// category is 0, 1, 2
 
 			// update UI
@@ -58,21 +62,26 @@ block content
 			document.getElementById(project + "__form").setAttribute("value", category)
 		}
 
-		var updateForm = $("#updateForm")[0];
-		uniqueProjects.forEach(function(project){
-			var category = projectCategoryMap[project];
-			
-			// add project field to update form
-			const hiddenField = document.createElement('input');
-			hiddenField.id = project + "__form";
-			hiddenField.type = 'hidden';
-			hiddenField.name = project;
-			updateForm.appendChild(hiddenField);
+		const updateProjects = () => {updateForm.submit();}
+		$(document).ready(() => {
+			var updateForm = $("#updateForm")[0];
+			uniqueProjects.forEach(function(project){
+				var category = tokenData[project];
+				
+				// add project field to update form
+				const hiddenField = document.createElement('input');
+				hiddenField.id = project + "__form";
+				hiddenField.type = 'hidden';
+				hiddenField.name = project;
+				updateForm.appendChild(hiddenField);
 
-			setProjectCategory(project, category);
+				setProjectCategory(project, category);
+			});
+
+			document.getElementById('toggl-api-key').value = tokenData['toggl-api-key'];
+			document.getElementById('workspace-id').value = tokenData['workspace-id'];
 		});
 
-		var updateProjects = () => {updateForm.submit();}
 
 	script.
 		// page logic

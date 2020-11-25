@@ -1,0 +1,11 @@
+extends layout
+
+block content
+	.card.m-4.w-25
+		.card-body
+			h5.card-title Error while retreiving data
+			p.card-text Your API Token or Workspace ID were not accepted by track.toggl.com
+			p.card-text Error Details: #{error}
+			p.card-text.text-muted See server logs for more informations
+		.card-footer
+			a(href="/") Back
