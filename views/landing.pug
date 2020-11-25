@@ -2,21 +2,29 @@ extends layout
 
 block content
 	.container.h-100
-		.row.h-100.justify-content-center.align-items-center
-			.col-6.text-center
-				.card.shadow
-					.card-body
-						h1.mb-4 togglmetrics
-						form.text-left(id='updateform' method='post', action='/', enctype='application/json')
-							.form-group
-								input#toggl-api-key.form-control(type='text' name='toggl-api-key' placeholder='your toggl account api key' required='')
-								small.form-text.text-muted 
-									| look for api token at 
-									a(href="https://track.toggl.com/profile" target="_blank") https://track.toggl.com/profile
-							.form-group
-								input#workspace-id.form-control(type='text' placeholder='your workspace id' name='workspace-id' required='')
-								small.form-text.text-muted 
-									| go at 
-									a(href="https://track.toggl.com/settings" target="_blank") https://track.toggl.com/settings 
-									| and copy the number from the url 
-							button.btn.btn-primary(type='submit') Analyse Your Toggl Data
+		.card-deck.h-100.align-items-center
+			.card.shadow#video-card
+				div(style='position: relative; padding-bottom: 62.5%; height: 0;')
+					iframe(src='https://www.loom.com/embed/4db08a28eaf84407a729390d42c94742' frameborder='0' webkitallowfullscreen='' mozallowfullscreen='' allowfullscreen='' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;')
+			.card.shadow#form-card
+				.card-body
+					h1.mb-4 toggl.life
+					form.text-left(id='updateform' method='post', action='/', enctype='application/json')
+						.form-group
+							input#toggl-api-key.form-control(type='text' name='toggl-api-key' placeholder='toggl API key' required='')
+							small.form-text.text-muted 
+								| look for "API token" at 
+								a(href="https://track.toggl.com/profile" target="_blank") https://track.toggl.com/profile
+						.form-group
+							input#workspace-id.form-control(type='text' placeholder='workspace ID' name='workspace-id' required='')
+							small.form-text.text-muted 
+								| look for the ID in the url at 
+								a(href="https://track.toggl.com/settings" target="_blank") https://track.toggl.com/settings 
+						button.btn.btn-primary(type='submit') Analyse Your Toggl Data
+
+	script.
+		$(document).ready(() => {
+			$("#form-card").css('height', $("#video-card").height());
+		})
+
+

@@ -14,5 +14,5 @@
   (get (load-token token) value))
 
 (defn save-token-data [token payload]
-  (let [updated-db (assoc (load-db) token payload)]
+  (let [updated-db (assoc (load-db) token (merge payload (load-token token)))]
     (.writeFileSync fs DB_PATH (.stringify js/JSON (clj->js updated-db)))))
