@@ -2,8 +2,7 @@ extends layout
 
 block content
 	.row.p-4
-		.col-2
-			.card.h-100
+		.col-2.card.h-100
 				.card-body
 					h5.card-title togglmetrics
 					h6.card-subtitle.mb-2.text-muted toggl sent #{length} Time Entries
@@ -44,7 +43,7 @@ block content
 	.card.m-4
 		.card-body#no-chart-nudge(style="display:none;")
 			h5.card-title No Data Yet..
-			p.card-text Put your projects into categories to see the breakdown of your data here!
+			h6.card-subtitle.mb-2.text-muted Put your projects into categories to see the breakdown of your data here!
 		canvas(style="width:60%;height:600px", id="canvas")
 	div(id="debug" style="display:none;" )
 		button(onclick='closeDebug()') hide debug informations
@@ -66,7 +65,10 @@ block content
 		var tokenData = !{JSON.stringify(token_data)};
 		var uniqueProjects = !{JSON.stringify(unique_projects)};
 		var categoriesColor = !{JSON.stringify(categories_color)};
-		var chartEmpty = !{JSON.stringify(duration_bar_chart_empty)};
+		var barChartData = !{JSON.stringify(duration_bar_chart)};
+		var chartNotEmpty = barChartData.datasets.some((dataset) => (
+			dataset.data.some((x) => (x > 0.0))
+		));
 
 		const setProjectCategory = function(project, category){
 			// category is 0, 1, 2
@@ -98,18 +100,18 @@ block content
 			document.getElementById('toggl-api-key').value = tokenData['toggl-api-key'];
 			document.getElementById('workspace-id').value = tokenData['workspace-id'];
 
-			if (chartEmpty) { hideElem('canvas')(); showElem('no-chart-nudge')();  }
+			if (!chartNotEmpty) { hideElem('canvas')(); showElem('no-chart-nudge')();  }
 		});
 
 
 
 
 	script.
+
 		// Chart.js logic
 		window.randomScalingFactor = function() {
 			return 20
 		};
-		var barChartData = !{JSON.stringify(duration_bar_chart)};
 		window.onload = function() {
 			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myBar = new Chart(ctx, {
