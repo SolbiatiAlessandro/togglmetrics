@@ -32,15 +32,15 @@
 
 (defn render-entrypoint 
   "recursive async function that calls detailed-report with different pages"
-  [req res page prev-entries]
+  [token req res page prev-entries]
   (go 
-    (let [new-entries (<! (toggl/detailed-report page))
+    (let [new-entries (<! (toggl/detailed-report token page))
           entries (into prev-entries new-entries)]
       (if (> (count new-entries) 0)
-        (render-entrypoint req res (+ page 1) entries)
+        (render-entrypoint token req res (+ page 1) entries)
         (.render res "index" (clj->js (toggl/report-extract-data entries report-fields)))))))
 
-(defn render-entrypoint-wrapper-get [req res] (render-entrypoint req res 1 nil))
+(defn render-entrypoint-wrapper-get [req res] (render-entrypoint "778134d90be17f0d492dd62529d7c1f5" req res 1 nil))
 (defn render-entrypoint-wrapper-post [req res] 
   "entrypoint post means user is sending new config data that need to be updated
   
@@ -49,8 +49,9 @@
   project_1 'undefined',
   project_2 category_2,
   ...}"
-  (let [data (js->clj (.-body req))] 
-    (db/save-token-data (get data "toggl-api-key") data)))
+  (let [data (js->clj (.-body req))
+        token (get data "toggl-api-key")] 
+    (db/save-token-data token data)))
 
 (defn express-app []
  (let [app (express)]

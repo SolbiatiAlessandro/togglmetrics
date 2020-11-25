@@ -6,11 +6,10 @@
   (:require-macros [cljs.core.async.macros :as am :refer [go]])    
   )
 
-(def toggl-client (toggl-api. #js {:apiToken "778134d90be17f0d492dd62529d7c1f5"}))
-(def default-params {:user_agent "alessandro.solbiati@gmail.com" :workspace_id "4782539" :since "2020-01-01"}) 
+(def default-params {:user_agent "togglmetrics" :since "2020-01-01"}) 
 
-(defn params [default-params page]
-  (let [p (merge default-params {:page page})
+(defn params [default-params page workspace_id]
+  (let [p (merge default-params {:page page :workspace_id workspace_id})
         js-p (clj->js p)]
     (js/console.log js-p)
     js-p))
@@ -23,11 +22,13 @@
 (defn report-extract-data [entries key-functions]
     (zipmap (keys key-functions) (report-functions entries key-functions)))
 
-(defn detailed-report [page]
-  (let [out (chan)]
+(defn detailed-report [token page]
+  (let [out (chan)
+        toggl-client (toggl-api. #js {:apiToken token})
+        workspace_id "4782539"]
     (js/console.log (str "detailed-report querying page " page))
     (go
-        (.detailedReport toggl-client (params default-params page)
+        (.detailedReport toggl-client (params default-params page workspace_id)
                     (fn [err report]
                       (go 
                         (js/console.log err)
