@@ -32,5 +32,9 @@ apt install openjdk-8-jre-headless
 # https://clojure.org/guides/getting_started#_installation_on_linux
 # follow linux installation of lein
 # https://stackoverflow.com/a/36940738/7067655
-# now follow instruction above "to run the app"
+# compile clojurescript
+lein figwheel
+# and now run pm2 as nodejs user
+sudo -u nodejs pm2 stop togglmetrics
+sudo -u nodejs pm2 start dev/togglmetrics
 ```

@@ -2,7 +2,9 @@
   (:require [fs])
   )
 
-(def DB_PATH "./db/tokens.json")
+(def PROD_DB_PATH "/var/www/togglmetrics/db/tokens.json")
+(def DEV_DB_PATH "./db/tokens.json")
+(def DB_PATH PROD_DB_PATH)
 
 (defn load-db []
   (js->clj (.parse js/JSON (.readFileSync fs DB_PATH))))
