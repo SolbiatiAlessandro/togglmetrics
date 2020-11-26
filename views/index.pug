@@ -23,7 +23,9 @@ block content
 								| go at 
 								a(href="https://track.toggl.com/settings" target="_blank") https://track.toggl.com/settings 
 								| and copy the number from the url 
-						button.btn.btn-primary(type='submit') update token
+						button.btn.btn-primary(type='submit', onclick="showElemInline('updateTokenSpinner')();")
+							span.spinner-border.spinner-border-sm.mr-2#updateTokenSpinner(style="display:none;")
+							| Update Token
 
 		.col-6
 			.card.h-100
@@ -39,7 +41,9 @@ block content
 								each category, index in categories
 									button.dropdown-item(onclick=`setProjectCategory('${project}', ${index});open_updateProjectsFooter();`) #{category}
 				.card-footer(id="updateProjectsFooter", style="display:none")
-					button.btn.btn-primary.card-link(onclick="updateProjects();") Update Projects
+					button.btn.btn-primary(onclick="updateProjects();showElemInline('updateProjectsSpinner')();") 
+						span.spinner-border.spinner-border-sm.mr-2#updateProjectsSpinner(style="display:none;")
+						| Update Projects
 
 	.card.m-4
 		.card-body#no-chart-nudge(style="display:none;")
@@ -54,6 +58,7 @@ block content
 	script.
 		// page logic
 		const displayElem = (val) => {return (id) => {document.getElementById(id).style.display = val;}};
+		const showElemInline = (id) => {return () => {displayElem('inline-block')(id)}};
 		const showElem = (id) => {return () => {displayElem('block')(id)}};
 		const hideElem = (id) => {return () => {displayElem('none')(id)}};
 
