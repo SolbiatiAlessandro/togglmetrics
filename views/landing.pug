@@ -20,11 +20,18 @@ block content
 							small.form-text.text-muted 
 								| look for the ID in the url at 
 								a(href="https://track.toggl.com/settings" target="_blank") https://track.toggl.com/settings 
-						button.btn.btn-primary(type='submit') Analyse Your Toggl Data
+						a.btn.btn-primary(onClick='submitForm()') Analyse Your Toggl Data
 
 	script.
+		const submitForm = function() {
+			Cookies.set('toggl-api-key', $("#toggl-api-key").val());
+			Cookies.set('workspace-id', $("#workspace-id").val());
+			$("#updateform").submit();
+		}
 		$(document).ready(() => {
 			$("#form-card").css('height', $("#video-card").height());
+			const cookies = Cookies.get();
+			console.log(cookies);
+			$("#toggl-api-key").val(cookies['toggl-api-key']);
+			$("#workspace-id").val(cookies['workspace-id']);
 		})
-
-
